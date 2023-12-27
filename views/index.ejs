@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+
+      <div>
+        <label>名称</label>
+        <input id="name"/>
+      </div>
+      <div>
+        <label>秘密</label>
+        <input type="password" id="password"/>
+      </div>
+      <div>
+        <label>年龄</label>
+        <input type="number" id="age"/>
+      </div>
+      <div>
+        <label>id</label>
+        <input id="id"/>
+      </div>
+      <div>
+        <button id="addBtn" type="button">新增 or 更新</button>
+        <button id="deleteBtn">删除</button>
+      </div>
+
+    <div>
+      <table>
+        <thead style="border: 1px;">
+          <tr>
+            <td >id</td>
+            <td>名称</td>
+            <td>年龄</td>
+          </tr>
+        </thead>
+        <tbody style="border: 1px;">
+
+        </tbody>
+      </table>
+    </div>
+
+    <script type="text/javascript">
+      fetch('http://localhost:3000/api/user/list?page=1&size=3').then(res => res.json()).then(({data}) => {
+        const tableBody = document.querySelector('tbody')
+        console.log(data)
+        tableBody.innerHTML = data.map((item) => {
+          return `<tr>
+            <td>${item._id}</td>
+            <td>${item.name}</td>
+            <td>${item.age}</td>
+          </tr>`
+        }).join('')
+      })
+
+
+      const addBtn = document.querySelector('#addBtn')
+      const deleteBtn = document.querySelector('#deleteBtn')
+      const nameDom = document.querySelector('#name')
+      const passwordDom = document.querySelector('#password')
+      const ageDom = document.querySelector('#age')
+      const idDom = document.querySelector('#id')
+
+      addBtn.onclick = function() {
+        // 有 id 就是编辑
+        if(idDom.value) {
+          const params = {
+            name: nameDom.value,
+            password: passwordDom.value,
+            age: ageDom.value,
+            id: idDom.value
+          }
+          console.log(params)
+          fetch('http://localhost:3000/api/user/update', {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            body: JSON.stringify(params)
+          })
+        } else {
+          const params = {
+            name: nameDom.value,
+            password: passwordDom.value,
+            age: ageDom.value
+          }
+          console.log(params)
+          fetch('http://localhost:3000/api/user/add', {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            body: JSON.stringify(params)
+          })
+        }
+
+      }
+
+      deleteBtn.onclick = function() {
+        const params = {
+          id: '658c52a773432a037dd24a6b',
+        }
+        fetch('http://localhost:3000/api/user/delete', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+          body: JSON.stringify(params)
+        })
+      }
+
+
+    </script>
+  </body>
+</html>
