@@ -33,8 +33,14 @@ const userController = {
     if (users.length === 0) {
       res.send({ok: 0 })
     } else {
+      req.session.user = users[0]
       res.send({ok: 1 })
     }
+  },
+
+  logout: async (req, res) => {
+    await req.session.destroy()
+    res.send({ok: 1 })
   }
 }
 

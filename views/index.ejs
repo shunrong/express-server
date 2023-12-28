@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>欢迎来到~ <%= title %></p>
+    <p>欢迎来到~ <%= title %><button id="logout">退出登录</button></p>
 
       <div>
         <label>名称</label>
@@ -53,6 +53,7 @@
       let currentPage = 1;
       let currentSize = 10;
 
+      const logoutBtn = document.querySelector('#logout')
       const addBtn = document.querySelector('#addBtn')
       const deleteBtn = document.querySelector('#deleteBtn')
       const nameDom = document.querySelector('#name')
@@ -111,6 +112,10 @@
             },
             // 'Content-Type': 'application/x-www-form-urlencoded',
             body: JSON.stringify(params)
+          }).then(res => res.json()).then((res) => {
+            if(res.ok === 0) {
+              location.href = '/login'
+            }
           })
         } else {
           const params = {
@@ -125,6 +130,10 @@
             },
             // 'Content-Type': 'application/x-www-form-urlencoded',
             body: JSON.stringify(params)
+          }).then(res => res.json()).then((res) => {
+            if(res.ok === 0) {
+              location.href = '/login'
+            }
           })
         }
 
@@ -141,9 +150,25 @@
           },
           // 'Content-Type': 'application/x-www-form-urlencoded',
           body: JSON.stringify(params)
+        }).then(res => res.json()).then((res) => {
+          if(res.ok === 0) {
+            location.href = '/login'
+          }
         })
       }
 
+      logoutBtn.onclick = function() {
+        fetch('http://localhost:3000/api/logout', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then(res => res.json()).then((res) => {
+          if(res.ok === 1) {
+            location.href = '/login'
+          }
+        })
+      }
 
     </script>
   </body>

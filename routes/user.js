@@ -10,5 +10,6 @@ router.post('/user/delete', userController.deleteUser)
 
 // 登录相关
 router.post('/login', userController.login)
+router.post('/logout', userController.logout)
 
 module.exports = router;
