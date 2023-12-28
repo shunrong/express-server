@@ -15,9 +15,12 @@ const userService = {
   },
 
   deleteUser: (id) => {
-    console.log(id)
     return UserModel.deleteOne({_id: id})
   },
+
+  login: (user) => {
+    return UserModel.find(user)
+  }
 }
 
 module.exports = userService

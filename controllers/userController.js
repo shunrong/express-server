@@ -26,6 +26,16 @@ const userController = {
     await userService.deleteUser(id)
     res.send({ok: 1})
   },
+
+  login: async (req, res) => {
+    const { name, password } = req.body
+    const users = await userService.login({ name, password })
+    if (users.length === 0) {
+      res.send({ok: 0 })
+    } else {
+      res.send({ok: 1 })
+    }
+  }
 }
 
 module.exports = userController;

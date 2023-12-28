@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: '客户管理系统首页' });
+  res.render('login', { title: '登录页' });
 });
 
 module.exports = router;

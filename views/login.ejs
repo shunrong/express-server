@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <style>
+    section {
+      margin: 30px auto;
+      width: 300px;
+    }
+    label {
+      display: inline-block;
+      width: 80px;
+      text-align: right;
+    }
+    input {
+      display: inline-block;
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+  </style>
+  <body>
+    <h1><%= title %></h1>
+    <p>欢迎来到 <%= title %></p>
+
+    <section>
+      <div >
+        <label>用户名</label>
+        <input id="name"/>
+      </div>
+      <div>
+        <label>密码</label>
+        <input type="password" id="password"/>
+      </div>
+      <div style="text-align: center;">
+        <button id="login">登录</button>
+      </div>
+    </section>
+
+
+
+    <script type="text/javascript">
+      const nameDom = document.querySelector('#name')
+      const passwordDom = document.querySelector('#password')
+      const loginBtn = document.querySelector('#login')
+
+      loginBtn.onclick = function() {
+        const params = {
+            name: nameDom.value,
+            password: passwordDom.value,
+          }
+
+          fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(params)
+          }).then((res)=> res.json()).then((data) => {
+            if(data.ok === 1) {
+              location.href = '/'
+            } else {
+              alert('用户名密码错误')
+            }
+          })
+      }
+    </script>
+  </body>
+</html>
