@@ -6,7 +6,7 @@ const userController = {
   addUser: async (req, res) => {
     const { name, password, age } = req.body
     const avatar = req.file ?
-      `/uploads/${req.file.filename}.${req.file.mimetype.split('/')[1]}` :
+      `/uploads/${req.file.filename}` :
       '/images/default.png'
     await userService.addUser({ name, password, age, avatar})
     res.send({ok: 1})

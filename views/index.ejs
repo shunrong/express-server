@@ -52,6 +52,10 @@
         <input type="number" id="age"/>
       </div>
       <div>
+        <label>头像</label>
+        <input type="file" id="avatar"/>
+      </div>
+      <div>
         <label>ID</label>
         <input id="id"/>
       </div>
@@ -90,6 +94,7 @@
       const nameDom = document.querySelector('#name')
       const passwordDom = document.querySelector('#password')
       const ageDom = document.querySelector('#age')
+      const avatarDom = document.querySelector('#avatar')
       const idDom = document.querySelector('#id')
       const pageDom = document.querySelector('#page')
       const prevBtn = document.querySelector('#prev')
@@ -145,12 +150,16 @@
             }
           })
         } else {
-          const params = {
-            name: nameDom.value,
-            password: passwordDom.value,
-            age: ageDom.value
-          }
-          axios.post('http://localhost:3000/api/user/add', params)
+          const formData = new FormData()
+          formData.append('name', nameDom.value)
+          formData.append('password', passwordDom.value)
+          formData.append('age', ageDom.value)
+          formData.append('avatar', avatarDom.files[0])
+          axios.post('http://localhost:3000/api/user/add', formData, {
+            headers: {
+              'Content-Type': 'mutilpart/form-data'
+            }
+          })
           .then(({data}) => {
             if(data.ok === 0) {
               location.href = '/login'
