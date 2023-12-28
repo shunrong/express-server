@@ -3,6 +3,28 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+      // 请求拦截器
+      axios.interceptors.request.use(function (request) {
+        const token = localStorage.getItem('token')
+        console.log('reqqqqq', request, token)
+        request.headers.Authorization =  token
+          return request;
+        }, function (error) {
+          return Promise.reject(error);
+        });
+
+      // 返回拦截器
+      axios.interceptors.response.use(function (response) {
+        console.log('ressss', response)
+        const { authorization } = response.headers
+        authorization && localStorage.setItem('token', authorization )
+          return response;
+        }, function (error) {
+          return Promise.reject(error);
+        });
+    </script>
   </head>
   <style>
     section {
@@ -47,23 +69,18 @@
 
       loginBtn.onclick = function() {
         const params = {
-            name: nameDom.value,
-            password: passwordDom.value,
+          name: nameDom.value,
+          password: passwordDom.value,
+        }
+        axios.post('http://localhost:3000/api/login', params)
+        .then(({data}) => {
+          console.log(data)
+          if(data.ok === 1) {
+            location.href = '/'
+          } else {
+            alert('用户名密码错误')
           }
-
-          fetch('http://localhost:3000/api/login', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params)
-          }).then((res)=> res.json()).then((data) => {
-            if(data.ok === 1) {
-              location.href = '/'
-            } else {
-              alert('用户名密码错误')
-            }
-          })
+        })
       }
     </script>
   </body>

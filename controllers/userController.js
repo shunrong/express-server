@@ -1,5 +1,6 @@
 
 const userService = require('../services/userService')
+const JWT = require('../util/JWT')
 
 const userController = {
   addUser: async (req, res) => {
@@ -33,13 +34,14 @@ const userController = {
     if (users.length === 0) {
       res.send({ok: 0 })
     } else {
-      req.session.user = users[0]
+      const { _id, name } = users[0]
+      const token = JWT.generate({ _id, name })
+      res.header('Authorization', token)
       res.send({ok: 1 })
     }
   },
 
   logout: async (req, res) => {
-    await req.session.destroy()
     res.send({ok: 1 })
   }
 }

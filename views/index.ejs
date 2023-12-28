@@ -3,6 +3,37 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+      // 请求拦截器
+      axios.interceptors.request.use(function (request) {
+        console.log('请求发出之前第一个执行')
+
+        const token = localStorage.getItem('token')
+        console.log('reqqqqq', request, token)
+        request.headers.Authorization =  `Bearer ${token}`
+          return request;
+        }, function (error) {
+          return Promise.reject(error);
+        });
+
+      // 返回拦截器
+      axios.interceptors.response.use(function (response) {
+        console.log('请求返回后第一个执行')
+        console.log('ressss', response)
+        const { authorization } = response.headers
+        authorization && localStorage.setItem('token', authorization )
+          return response;
+        }, function (error) {
+          console.log('error', error)
+          const { status } = error.response
+          if(status === 401) {
+            localStorage.removeItem('token')
+            location.href = '/login'
+          }
+          return Promise.reject(error);
+        });
+    </script>
   </head>
   <body>
     <h1><%= title %></h1>
@@ -64,8 +95,9 @@
       const prevBtn = document.querySelector('#prev')
       const nextBtn = document.querySelector('#next')
 
-      function fetchList (page, size){
-        fetch(`http://localhost:3000/api/user/list?page=${page}&size=${size}`).then(res => res.json()).then(({data}) => {
+      function fetchList(page, size){
+        axios.get(`http://localhost:3000/api/user/list?page=${page}&size=${size}`)
+        .then(({data: {data}}) => {
           const tableBody = document.querySelector('tbody')
           console.log(data)
           const { list, page, size, total } = data
@@ -105,15 +137,9 @@
             age: ageDom.value,
             id: idDom.value
           }
-          fetch('http://localhost:3000/api/user/update', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-            body: JSON.stringify(params)
-          }).then(res => res.json()).then((res) => {
-            if(res.ok === 0) {
+          axios.post('http://localhost:3000/api/user/update', params)
+          .then(({data}) => {
+            if(data.ok === 0) {
               location.href = '/login'
             }
           })
@@ -123,15 +149,9 @@
             password: passwordDom.value,
             age: ageDom.value
           }
-          fetch('http://localhost:3000/api/user/add', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-            body: JSON.stringify(params)
-          }).then(res => res.json()).then((res) => {
-            if(res.ok === 0) {
+          axios.post('http://localhost:3000/api/user/add', params)
+          .then(({data}) => {
+            if(data.ok === 0) {
               location.href = '/login'
             }
           })
@@ -143,28 +163,19 @@
         const params = {
           id: idDom.value,
         }
-        fetch('http://localhost:3000/api/user/delete', {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-          body: JSON.stringify(params)
-        }).then(res => res.json()).then((res) => {
-          if(res.ok === 0) {
+        axios.post('http://localhost:3000/api/user/delete', params)
+        .then(({data}) => {
+          if(data.ok === 0) {
             location.href = '/login'
           }
         })
       }
 
       logoutBtn.onclick = function() {
-        fetch('http://localhost:3000/api/logout', {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }).then(res => res.json()).then((res) => {
-          if(res.ok === 1) {
+        axios.post('http://localhost:3000/api/logout')
+        .then(({data}) => {
+          if(data.ok === 1) {
+            localStorage.removeItem('token')
             location.href = '/login'
           }
         })
