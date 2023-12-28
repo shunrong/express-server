@@ -11,12 +11,12 @@ const userService = {
   },
 
   getUserList: (params) => {
-    const { page, size } = params
-    return UserModel.find({}, {password: 0}).sort({age: 1}).skip((page -1) * size).limit(size)
+    return UserModel.find({}, { password: 0 }).sort({ age: 1 })
   },
 
   deleteUser: (id) => {
-    return UserModel.deleteOne({name: undefined})
+    console.log(id)
+    return UserModel.deleteOne({_id: id})
   },
 }
 

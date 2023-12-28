@@ -16,9 +16,9 @@ const userController = {
 
   getUserList: async (req, res) => {
     const { page, size } = req.query
-    console.log()
-    const data = await userService.getUserList({ page, size })
-    res.send({ok: 1, data})
+    const allList = await userService.getUserList()
+    const list = allList.slice((page-1)*size, page*size)
+    res.send({ok: 1, data: {list, page: Number(page), size: Number(size), total:allList.length }})
   },
 
   deleteUser: async (req, res) => {
