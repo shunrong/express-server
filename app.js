@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
 var loginRouter = require('./routes/login');
+var uploadRouter = require('./routes/upload');
 const JWT = require('./util/JWT');
 
 var app = express();
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/api', userRouter);
 app.use('/login', loginRouter);
+app.use('/upload', uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

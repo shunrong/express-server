@@ -5,7 +5,8 @@ const { model, Schema} = mongoose
 const UserModel = model('users', new Schema({
   name: String,
   password: String,
-  age: Number
+  age: Number,
+  avatar: String
 }))
 
 module.exports = UserModel 

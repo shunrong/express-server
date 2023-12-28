@@ -10,7 +10,7 @@ const userService = {
     return UserModel.updateOne({_id: id}, rest)
   },
 
-  getUserList: (params) => {
+  getUserList: () => {
     return UserModel.find({}, { password: 0 }).sort({ age: 1 })
   },
 
