@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <style>
+    section {
+      margin: 20px;
+      padding: 12px;
+    }
+
+    .msgItem {
+      padding: 8px;
+      border-radius: 4px;
+      margin: 12px;
+      min-width: 30%;
+      max-width: 60%;
+      font-size: 14px;
+      line-height: 20px;
+      background-color: greenyellow;
+      color: #333;
+    }
+  </style>
+  <body>
+    <h1><%= title %></h1>
+    <p>欢迎来到 <%= title %></p>
+    <section id="msgList">
+
+    </section>
+    <section>
+      <textarea id="msgInput">
+
+      </textarea>
+      <button id="msgBtn">发送</button>
+    </section>
+
+
+    <script type="text/javascript">
+      const MsgType = {
+        Error: 0,
+        Single: 1,
+        Group: 2
+      }
+
+      function createMsg(type, user, text) {
+        return JSON.stringify({type, user, text})
+      }
+
+      const ws = new WebSocket(`ws://localhost:8080?token=${localStorage.getItem('token')}`)
+
+      ws.onopen = function(data) {
+        console.log('open')
+        console.log(data)
+      }
+
+      ws.onmessage = function(msgData) {
+        // 接收消息
+        const { text } = JSON.parse(msgData.data)
+        const msgItem = document.createElement('div')
+        msgItem.className = 'msgItem'
+        msgItem.innerText = text
+        msgListDom.appendChild(msgItem)
+      }
+
+      ws.onclose = function(data) {
+        console.log(data)
+      }
+      
+      ws.onerror = function(data) {
+        console.log(data)
+      }
+
+      const msgListDom = document.querySelector('#msgList')
+      const msgInputDom = document.querySelector('#msgInput')
+      const msgBtn = document.querySelector('#msgBtn')
+
+      msgBtn.onclick = function() {
+        const text = msgInputDom.value
+        ws.send(createMsg(MsgType.Group, {}, text))
+        const msgItem = document.createElement('div')
+        msgItem.className = 'msgItem'
+        msgItem.innerText = text
+        msgListDom.appendChild(msgItem)
+        msgInputDom.value = ''
+      }
+
+    </script>
+  </body>
+</html>
